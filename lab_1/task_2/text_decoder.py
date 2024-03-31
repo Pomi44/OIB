@@ -41,6 +41,6 @@ def decode_text(input_path:str, output_path:str, key_path:str) -> None:
 
 
 if __name__ == '__main__':
-    with open(os.path.join("lab_1","task_2","config.json"), 'r', encoding='utf-8') as json_file:
+    with open(os.path.join("lab_1","task_2","config2.json"), 'r', encoding='utf-8') as json_file:
         config = json.load(json_file)
-    decode_text(config["input_file"], config["output_file"], config["key"])
+    decode_text(config["input_file"], config["output_file"], config["key2"])
