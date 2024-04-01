@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def read_txt_file(filename: str) -> str:
     """
     Reads text from a file.
@@ -20,6 +21,7 @@ def read_txt_file(filename: str) -> str:
     except Exception as e:
         print(f"Error reading file '{filename}': {e}")
 
+
 def write_txt_file(filename: str, text: str) -> None:
     """
     Writes text to a file.
@@ -33,6 +35,7 @@ def write_txt_file(filename: str, text: str) -> None:
             file.write(text)
     except Exception as e:
         print(f"Error writing to file '{filename}': {e}")
+
 
 def read_json_file(filename: str) -> dict:
     """
@@ -54,6 +57,7 @@ def read_json_file(filename: str) -> dict:
         print(f"Error decoding JSON file '{filename}'.")
     except Exception as e:
         print(f"Error reading JSON file '{filename}': {e}")
+
 
 def write_json_file(filename: str, data: dict) -> None:
     """

@@ -2,7 +2,9 @@ import os
 import json
 import logging
 
+
 logging.basicConfig(level=logging.INFO)
+
 
 def decode_text(input_path:str, output_path:str, key_path:str) -> None:
     """
@@ -21,14 +23,11 @@ def decode_text(input_path:str, output_path:str, key_path:str) -> None:
         with open(key_path, 'r', encoding='utf-8') as key_file:
             key_mapping = json.load(key_file)
 
-        # Чтение текста из входного файла
         with open(input_path, 'r', encoding='utf-8') as input_file:
             input_text = input_file.read()
 
-        # Замена символов в соответствии с ключом
         output_text = ''.join(key_mapping.get(char, char) for char in input_text)
 
-        # Запись результата в выходной файл
         with open(output_path, 'w', encoding='utf-8') as output_file:
             output_file.write(output_text)
 

@@ -1,5 +1,5 @@
-import json
 from w_r_files import *
+
 
 def caesar_cipher_key(shift: int, alphabet_filename: str, output_filename: str) -> dict:
     """
@@ -14,20 +14,19 @@ def caesar_cipher_key(shift: int, alphabet_filename: str, output_filename: str) 
         dict: A dictionary representing the Caesar cipher encryption key.
     """
     try:
-        # Читаем алфавит из файла
         russian_alphabet = read_txt_file(alphabet_filename)
 
         shifted_alphabet = russian_alphabet[shift:] + russian_alphabet[:shift]
         key = {russian_alphabet[i]: shifted_alphabet[i] for i in range(len(russian_alphabet))}
         
-        # Записываем словарь в файл с использованием функции write_json_file
         write_json_file(output_filename, key)
 
         return key
     except Exception as e:
         print(f"Error generating key: {e}")
 
-def encrypt_with_key(text: str, key_filename: str, output_filename: str) -> str:
+
+def encrypt_with_key(text: str, key_filename: str, output_filename: str,decrypt: bool = False) -> str:
     """
     Encrypts the text using the key from the JSON file and writes the result to a file.
 
@@ -41,6 +40,8 @@ def encrypt_with_key(text: str, key_filename: str, output_filename: str) -> str:
     """
     try:
         key = read_json_file(key_filename)
+        if decrypt:
+            key = {v: k for k, v in key.items()}
         encrypted_text = ''.join(key.get(char, char) for char in text)
         write_txt_file(output_filename, encrypted_text)
         return encrypted_text
@@ -50,7 +51,6 @@ def encrypt_with_key(text: str, key_filename: str, output_filename: str) -> str:
 
 if __name__ == '__main__':
     try:
-        # Read parameters from config1.json
         config = read_json_file("config1.json")
 
         text_filename = config["text_filename"]
@@ -62,7 +62,8 @@ if __name__ == '__main__':
         caesar_cipher_key(shift, alphabet, key)
 
         encrypted_text_filename = config["encrypted_text_filename"]
-        encrypted_text = encrypt_with_key(text, key, encrypted_text_filename)
+        decrypt = config["decrypt"]
+        encrypted_text = encrypt_with_key(text, key, encrypted_text_filename, decrypt)
         
     except Exception as e:
         print(f"An error occurred: {e}")
