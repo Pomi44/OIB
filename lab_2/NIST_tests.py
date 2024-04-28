@@ -1,7 +1,26 @@
 import math
+
+from w_r_files import *
 from scipy.special import gammaincc
 
-def runs_test(bits):
+
+def frequency_test(bits):
+    n = len(bits)
+    s_obs = 0
+
+    for bit in bits:
+        if bit == '1':
+            s_obs += 1
+        else:
+            s_obs -= 1
+
+    Sn =math.sqrt(n) * s_obs
+    P_value = math.erfc(Sn / math.sqrt(2))
+    
+    return P_value
+
+
+def consecutive_bits_test(bits):
     n = len(bits)
     ones_count = bits.count('1')
     e = ones_count / n
@@ -53,11 +72,7 @@ def longest_run_of_ones_test(bits):
 
 
     chi_squared = sum([(freq_count[i] - 16 * Pi[i]) ** 2 / 16 * Pi[i] for i in range(4)])
-    p_value = gammaincc(3 / 2, chi_squared / 2)
+    P_value = gammaincc(3 / 2, chi_squared / 2)
 
-    return p_value
+    return P_value
 
-sequence = '1100110000010101011011000100110011100000000100101101010001000111101101000000110101111100110011001101100010110010'
-
-# Тестирование
-print("Longest run of ones test p-value for sequence:", longest_run_of_ones_test(sequence))
