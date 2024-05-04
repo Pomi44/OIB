@@ -59,7 +59,7 @@ def consecutive_bits_test(bits: str) -> Union[float, None]:
         if not abs(e - 0.5) < (2 / math.sqrt(n)):
             return 0
         
-        Vn = 1
+        Vn = 0
         for i in range(1, n):
             if bits[i] != bits[i - 1]:
                 Vn += 1
@@ -110,7 +110,7 @@ def longest_run_of_ones_test(bits: str) -> Union[float, None]:
                     freq_count[1] += 1
                 case 3:
                     freq_count[2] += 1
-                case 4:
+                case 4 | 5 | 6 | 7 | 8:
                     freq_count[3] += 1
 
 
