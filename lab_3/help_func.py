@@ -10,30 +10,37 @@ class EncryptionHelper:
     """
 
     @staticmethod
-    def save_key_to_file(key_bytes: bytes, key_file_path: str, is_public: bool) -> None:
+    def serialize_key(key, key_path: str, key_type: str) -> None:
         """
         Serialize a key to a file.
 
         Args:
-            key_bytes (bytes): The bytes representing the key.
-            key_file_path (str): The path to save the serialized key.
-            is_public (bool): Indicates whether the key is public or private.
+            key: The key object to be serialized (public or private key).
+            key_path (str): The path to save the serialized key.
+            key_type (str): The type of the key ('public' or 'private').
         """
-        key_type = serialization.PublicFormat.SubjectPublicKeyInfo if is_public else serialization.PrivateFormat.TraditionalOpenSSL
-        key_label = "public" if is_public else "private"
-        
         try:
-            with open(key_file_path, "wb") as key_file:
-                key_file.write(key_bytes.public_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=key_type
-                ))
-            logging.info(f"{key_label.capitalize()} key saved to {key_file_path}.")
+            with open(key_path, 'wb') as key_file:
+                if key_type == 'public':
+                    key_bytes = key.public_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PublicFormat.SubjectPublicKeyInfo
+                    )
+                elif key_type == 'private':
+                    key_bytes = key.private_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PrivateFormat.PKCS8,
+                        encryption_algorithm=serialization.NoEncryption()
+                    )
+                else:
+                    raise ValueError("Invalid key type. Must be 'public' or 'private'.")
+
+                key_file.write(key_bytes)
         except Exception as e:
-            logging.error(f"Failed to save {key_label} key to {key_file_path}: {e}")
+            logging.error(f"Failed to serialize {key_type} key: {e}")
 
     @staticmethod
-    def load_key_from_file(key_file_path: str, is_public: bool) -> rsa.RSAPublicKey:
+    def load_key_from_file(key_file_path: str) -> rsa.RSAPublicKey:
         """
         Deserialize a key from a file.
 
@@ -44,22 +51,16 @@ class EncryptionHelper:
         Returns:
             rsa.RSAPublicKey: The deserialized RSA key.
         """
-        key_label = "public" if is_public else "private"
+
         
         try:
-            with open(key_file_path, "rb") as key_file:
-                if is_public:
-                    return serialization.load_pem_public_key(
-                        key_file.read(),
-                    )
-                else:
+            with open(key_file_path, "rb") as private_key_file:
                     return serialization.load_pem_private_key(
-                        key_file.read(),
+                        private_key_file.read(),
                         password=None
                     )
-            logging.info(f"{key_label.capitalize()} key loaded from {key_file_path}.")
         except Exception as e:
-            logging.error(f"Failed to load {key_label} key from {key_file_path}: {e}")
+            logging.error(f"Failed to deserialize private key: {e}")
 
     @staticmethod
     def write_to_file(file_path: str, data: bytes) -> None:

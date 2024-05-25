@@ -1,0 +1,12 @@
+{
+    "mode": "dec",
+    "key_length": 128,
+    "text_file": "lab_3/texts/text.txt",
+    "public_key": "lab_3/keys/public_key.pem",
+    "private_key": "lab_3/keys/private_key.pem",
+    "symmetric_key_file": "lab_3/keys/sym_key.txt",
+    "encrypted_text_file": "lab_3/texts/encrypted_text.txt",
+    "decrypted_text_file": "lab_3/texts/decrypted_text.txt",
+    "iv_path_file": "lab_3/iv_path_file.txt",
+    "block_size": 8
+  }

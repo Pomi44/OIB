@@ -29,7 +29,7 @@ class AsymmCrypt:
             logging.error(f"Failed to generate key pair: {e}")
             raise
 
-    def encrypt_with_public_key(self, public_key, text):
+    def encrypt_with_public_key(self, public_key: rsa.RSAPublicKey, text) -> bytes:
         """
         Encrypts text with the provided RSA public key.
 
@@ -55,7 +55,7 @@ class AsymmCrypt:
             logging.error(f"Failed to encrypt with public key: {e}")
             raise
 
-    def decrypt_with_private_key(self, private_key, encrypted_text):
+    def decrypt_with_private_key(self, private_key: rsa.RSAPrivateKey, encrypted_text: bytes) -> bytes:
         """
         Decrypts encrypted text with the provided RSA private key.
 

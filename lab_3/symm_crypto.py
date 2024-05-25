@@ -22,46 +22,16 @@ class SymmCrypt:
         decrypt_text(decrypted_text_path, iv_path, ciphertext_path): Decrypts the given ciphertext using the symmetric key and saves the decrypted text to a file.
     """
 
-    name = "Blowfish"
-    block_size = 64
-    key_sizes = frozenset(range(32, 449, 8))
 
-    def __init__(self, key: bytes) -> None:
+    def __init__(self, key_len: int) -> None:
         """
-        Initializes the SymmCrypt object with the specified symmetric key.
+        Initializes the SymmCrypt object with the specified key length.
 
         Args:
-            key (bytes): The symmetric key.
+            key_len (int): The length of the symmetric key in bits.
         """
-        self.key = self._verify_key_size(key)
+        self.key_len = key_len
 
-
-    def key_size(self) -> int:
-        """
-        Returns the size of the symmetric key in bits.
-
-        Returns:
-            int: The size of the symmetric key in bits.
-        """
-        return len(self.key) * 8
-
-    def _verify_key_size(self, key: bytes) -> bytes:
-        """
-        Verifies that the length of the key is within the allowed range.
-
-        Args:
-            key (bytes): The symmetric key.
-
-        Returns:
-            bytes: The symmetric key.
-
-        Raises:
-            ValueError: If the length of the key is not within the allowed range.
-        """
-        key_len = len(key) * 8
-        if key_len not in self.key_sizes:
-            raise ValueError(f"Invalid key size. Allowed key sizes: {self.key_sizes}")
-        return key
 
     def generate_key(self) -> bytes:
         """
@@ -71,11 +41,13 @@ class SymmCrypt:
             bytes: The generated symmetric key.
         """
         try:
-            return os.urandom(self.block_size // 8)
+            return os.urandom(self.key_len//8)
         except Exception as e:
             logging.error(f"Failed to generate key: {e}")
 
-    def encrypt_text(self, encrypted_text_path: str, iv_path: str, text: bytes) -> None:
+
+
+    def encrypt_text(self, key: bytes, encrypted_text_path: str, iv_path: str, block_size:int, text: bytes) -> None:
         """
         Encrypts the given text using the symmetric key and saves the encrypted text to a file.
 
@@ -85,19 +57,19 @@ class SymmCrypt:
             text (bytes): The text to be encrypted.
         """
         try:
-            iv = os.urandom(self.block_size // 8)
-            cipher = Cipher(algorithms.Blowfish(self.key), modes.CBC(iv))
+            iv = os.urandom(block_size)
+            cipher = Cipher(algorithms.Blowfish(key), modes.CBC(iv))
             encryptor = cipher.encryptor()
             padder = padding.PKCS7(128).padder()
             padded_text = padder.update(text) + padder.finalize()
             ciphertext = iv + encryptor.update(padded_text) + encryptor.finalize()
 
             EncryptionHelper.write_to_file(iv_path, iv)
-            EncryptionHelper.write_to_file(encrypted_text_path, ciphertext[self.block_size // 8:])
+            EncryptionHelper.write_to_file(encrypted_text_path, ciphertext[block_size:])
         except Exception as e:
             logging.error(f"Failed to encrypt text: {e}")
 
-    def decrypt_text(self, decrypted_text_path: str, iv_path: str, ciphertext_path: str) -> None:
+    def decrypt_text(self, key:bytes, decrypted_text_path: str, iv_path: str, ciphertext_path: str) -> None:
         """
         Decrypts the given ciphertext using the symmetric key and saves the decrypted text to a file.
 
@@ -110,7 +82,7 @@ class SymmCrypt:
             iv = EncryptionHelper.read_from_file(iv_path)
             ciphertext = EncryptionHelper.read_from_file(ciphertext_path)
 
-            cipher = Cipher(algorithms.Blowfish(self.key), modes.CBC(iv))
+            cipher = Cipher(algorithms.Blowfish(key), modes.CBC(iv))
             decryptor = cipher.decryptor()
 
             plaintext = decryptor.update(ciphertext) + decryptor.finalize()
