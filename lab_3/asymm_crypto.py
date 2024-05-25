@@ -9,7 +9,7 @@ class AsymmCrypt:
     Provides methods for asymmetric encryption and decryption using RSA algorithm.
     """
 
-    def generate_key_pair(self):
+    def generate_key_pair(self) -> tuple:
         """
         Generates a pair of RSA private and public keys.
 
