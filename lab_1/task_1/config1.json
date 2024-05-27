@@ -1,8 +1,0 @@
-{
-    "text_filename": "encrypted_text.txt",
-    "alphabet_filename": "alphabet.txt",
-    "shift": 3,
-    "key_filename": "key.json",
-    "encrypted_text_filename": "decrypted_text.txt",
-    "decrypt": true
-}
