@@ -7,7 +7,7 @@ from symm_crypto import SymmCrypt
 from help_func import EncryptionHelper
 
 def main(config_path, operation):
-    with open("lab_3/config.json", 'r') as f:
+    with open(config_path, 'r') as f:
         config = json.load(f)
     if operation:
         config["mode"] = operation
@@ -39,8 +39,8 @@ def main(config_path, operation):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process some cryptographic operations.")
-    parser.add_argument("--config_path", type=str, default= os.path.join('C','Users''ksush','OneDrive''Рабочий стол','OIB''lab_3','config.json'), help="Path to the JSON configuration file.")
-    parser.add_argument("--operation", type=str, default= "dec", help="Operation to perform (overrides the operation in the config file).")
+    parser.add_argument("--config_path", type=str, default= os.path.join('lab_3','config.json'), help="Path to the JSON configuration file.")
+    parser.add_argument("--operation", type=str, default= "gen", help="Operation to perform (overrides the operation in the config file).")
     
     args = parser.parse_args()
     main(args.config_path, args.operation)
