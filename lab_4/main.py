@@ -3,14 +3,13 @@ import logging
 
 from card_utils import serialize_card_number, load_config
 from search import find_card_number_parallel, get_cpu_count
-
+from luhn_validator import luhn_check
 
 logging.basicConfig(level=logging.INFO)
 
-
 def main():
     parser = argparse.ArgumentParser(description="Card Number Search Tool")
-    parser.add_argument('mode', choices=['generate'], help='Mode of operation')
+    parser.add_argument('mode', choices=['generate', 'validate'], help='Mode of operation')
     parser.add_argument('--config', type=str, help='Path to the config JSON file', required=True)
     args = parser.parse_args()
 
@@ -30,6 +29,13 @@ def main():
                 logging.info("Card number not found.")
         except Exception as e:
             logging.error(f"An error occurred in 'generate' mode: {e}")
+
+    elif args.mode == 'validate':
+        card_number = input("Enter the card number to validate: ")
+        if luhn_check(card_number):
+            logging.info("The card number is valid.")
+        else:
+            logging.info("The card number is invalid.")
 
 if __name__ == "__main__":
     main()
