@@ -4,12 +4,13 @@ import logging
 from card_utils import serialize_card_number, load_config
 from search import find_card_number_parallel, get_cpu_count
 from luhn_validator import luhn_check
+from benchmark import measure_time, plot_time_vs_processes
 
 logging.basicConfig(level=logging.INFO)
 
 def main():
     parser = argparse.ArgumentParser(description="Card Number Search Tool")
-    parser.add_argument('mode', choices=['generate', 'validate'], help='Mode of operation')
+    parser.add_argument('mode', choices=['generate', 'validate', 'benchmark'], help='Mode of operation')
     parser.add_argument('--config', type=str, help='Path to the config JSON file', required=True)
     args = parser.parse_args()
 
@@ -36,6 +37,11 @@ def main():
             logging.info("The card number is valid.")
         else:
             logging.info("The card number is invalid.")
+
+    elif args.mode == 'benchmark':
+        max_processes = int(1.5 * get_cpu_count())
+        processes, times = measure_time(config['hash'], config['bins'][0], config['last_numbers'], max_processes)
+        plot_time_vs_processes(processes, times)
 
 if __name__ == "__main__":
     main()
