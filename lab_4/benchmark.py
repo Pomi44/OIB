@@ -1,6 +1,8 @@
 import time
 import matplotlib.pyplot as plt
+
 from search import find_card_number_parallel
+
 
 def measure_time(hash_target: str, bin_code: str, last_four: str, max_processes: int):
     """Measure the time to find the card number using different numbers of processes."""
